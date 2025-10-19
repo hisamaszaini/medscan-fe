@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import HomePage from './pages/HomePage';
 import './index.css';
 import ScreeningMenuPage from './pages/ScreeningMenuPage';
@@ -12,6 +13,7 @@ import HistoryPage from './pages/HistoryPage';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
+      <Toaster position="top-right" richColors />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/screening/menu" element={<ScreeningMenuPage />} />
