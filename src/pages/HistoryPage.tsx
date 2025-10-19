@@ -130,7 +130,7 @@ export default function HistoryPage() {
     const fetchHistory = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${API_BASE_URL}/history`, {
+        const res = await fetch(`${API_BASE_URL}/api/history`, {
           credentials: 'include', // ⚡ kirim cookie
         });
         if (res.status === 401) {
