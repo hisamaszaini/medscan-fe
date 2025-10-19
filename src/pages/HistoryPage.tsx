@@ -74,7 +74,7 @@ export default function HistoryPage() {
                 ) : historyData.length > 0 ? (
                   <>
                     {historyData.map((record) => (
-                      <HistoryCard key={record.created_at} record={record} />
+                      <HistoryCard key={record.created_at} record={record} onDeleted={record.id} />
                     ))}
 
                     {/* Pagination */}

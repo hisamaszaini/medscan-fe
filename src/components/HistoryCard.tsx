@@ -1,9 +1,17 @@
 import { useState, type JSX } from 'react';
-import { Eye, Heart, User, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { Eye, Heart, User, FileText, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
-export default function HistoryCard({ record }: { record: any }) {
+
+export default function HistoryCard({
+  record,
+  onDeleted,
+}: {
+  record: any;
+  onDeleted: () => void;
+}) {
   const [open, setOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   // Tentukan status
   let statusText = 'Tidak Terdeteksi';
@@ -38,6 +46,24 @@ export default function HistoryCard({ record }: { record: any }) {
     'Malnutrisi': 'bg-sky-500',
   };
 
+  const handleDelete = async () => {
+    if (!confirm(`Hapus riwayat screening ${record.user.name}?`)) return;
+    setDeleting(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/history/${record.id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error('Failed to delete');
+      onDeleted();
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menghapus record');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/20 p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       <div className="flex flex-col sm:flex-row gap-6">
@@ -55,13 +81,23 @@ export default function HistoryCard({ record }: { record: any }) {
             </span>
           </div>
 
-          <button
-            onClick={() => setOpen(!open)}
-            className="mt-4 flex items-center justify-between w-full text-left px-4 py-2 bg-gray-100/60 rounded-lg hover:bg-gray-100 transition-colors font-semibold"
-          >
-            <span>{open ? 'Tutup Detail' : 'Lihat Detail'}</span>
-            {open ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-          </button>
+          <div className="mt-4 flex gap-2 flex-wrap">
+            <button
+              onClick={() => setOpen(!open)}
+              className="flex-1 flex items-center justify-between px-4 py-2 bg-gray-100/60 rounded-lg hover:bg-gray-100 transition-colors font-semibold"
+            >
+              <span>{open ? 'Tutup Detail' : 'Lihat Detail'}</span>
+              {open ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </button>
+
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="flex-1 flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-semibold"
+            >
+              <Trash2 className="w-5 h-5 mr-2" /> {deleting ? 'Menghapus...' : 'Hapus'}
+            </button>
+          </div>
 
           {open && (
             <div className="mt-4 space-y-4 border-t border-gray-200 pt-4">
