@@ -169,7 +169,12 @@ export default function HistoryPage() {
   }, [page, limit, isLoggedIn, reloadTrigger]);
 
   if (!isLoggedIn)
-    return <LoginModal onLogin={() => setIsLoggedIn(true) & setReloadTrigger((prev) => prev + 1)} />;
+    return <LoginModal
+      onLogin={() => {
+        setIsLoggedIn(true);
+        setReloadTrigger(prev => prev + 1);
+      }}
+    />;
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 antialiased relative overflow-x-hidden">
