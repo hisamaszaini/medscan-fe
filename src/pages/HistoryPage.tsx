@@ -9,9 +9,17 @@ const HistoryCard = ({ record }: { record: any }) => {
   // Tentukan status
   let statusText = 'Tidak Terdeteksi';
   let statusColor = 'bg-gray-100 text-gray-700';
-  if (record.result?.length > 0) {
-    const hasPositive = record.result.some((r: any) => r.class === 1);
-    if (hasPositive) {
+
+  const hasResult = Array.isArray(record.result)
+    ? record.result.length > 0
+    : record.result?.class !== undefined;
+
+  if (hasResult) {
+    const isPositive = Array.isArray(record.result)
+      ? record.result.some((r: any) => r.class === 1)
+      : record.result.class === 1;
+
+    if (isPositive) {
       statusText = `Positif ${record.category}`;
       statusColor = 'bg-red-100 text-red-700';
     } else {
@@ -20,7 +28,6 @@ const HistoryCard = ({ record }: { record: any }) => {
     }
   }
 
-  // Icon kategori
   const iconMap: Record<string, JSX.Element> = {
     'Diabetic Retinopathy': <Eye className="w-6 h-6 text-white" />,
     'Anemia': <Heart className="w-6 h-6 text-white" />,
@@ -66,7 +73,7 @@ const HistoryCard = ({ record }: { record: any }) => {
   );
 };
 
-const LoginModal = ({ onLogin }: { onLogin: () => void }) => {
+const LoginModal = ({ onLogin }: { onLogin: () => void; }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -82,8 +89,11 @@ const LoginModal = ({ onLogin }: { onLogin: () => void }) => {
         body: JSON.stringify({ username, password }),
       });
       const data = await res.json();
-      if (res.ok) onLogin();
-      else alert(data.message || 'Login gagal');
+      if (res.ok) {
+        onLogin();
+      } else {
+        alert(data.message || 'Login gagal');
+      }
     } catch (err) {
       console.error(err);
       alert('Terjadi kesalahan saat login');
@@ -129,34 +139,37 @@ export default function HistoryPage() {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+  const [reloadTrigger, setReloadTrigger] = useState(0);
+
+  const fetchHistory = async () => {
+    if (!isLoggedIn) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/history?page=${page}&limit=${limit}`, {
+        credentials: 'include',
+      });
+      if (res.status === 401) {
+        setIsLoggedIn(false);
+        return;
+      }
+      if (!res.ok) throw new Error('Failed to fetch history');
+      const data = await res.json();
+      setHistoryData(data.history || []);
+      setTotalPages(data.total_pages || 1);
+    } catch (err) {
+      console.error(err);
+      alert('Gagal memuat data riwayat');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchHistory = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/history?page=${page}&limit=${limit}`, {
-          credentials: 'include',
-        });
-        if (res.status === 401) {
-          setIsLoggedIn(false);
-          return;
-        }
-        if (!res.ok) throw new Error('Failed to fetch history');
-        const data = await res.json();
-        setHistoryData(data.history || []);
-        setTotalPages(data.total_pages || 1);
-        setIsLoggedIn(true);
-      } catch (err) {
-        console.error(err);
-        alert('Gagal memuat data riwayat');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchHistory();
-  }, [page, limit]);
+  }, [page, limit, isLoggedIn, reloadTrigger]);
 
-  if (!isLoggedIn) return <LoginModal onLogin={() => setIsLoggedIn(true)} />;
+  if (!isLoggedIn)
+    return <LoginModal onLogin={() => setIsLoggedIn(true) & setReloadTrigger((prev) => prev + 1)} />;
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 antialiased relative overflow-x-hidden">
