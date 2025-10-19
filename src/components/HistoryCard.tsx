@@ -50,7 +50,7 @@ export default function HistoryCard({
     if (!confirm(`Hapus riwayat screening ${record.user.name}?`)) return;
     setDeleting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/history/${record.id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/history/${record.id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
