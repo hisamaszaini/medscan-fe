@@ -67,7 +67,7 @@ export default function HistoryCard({ record }: { record: any }) {
             <div className="mt-4 space-y-4 border-t border-gray-200 pt-4">
               {record.image_path && (
                 <img
-                  src={`${API_BASE_URL}/${record.image_path}`}
+                  src={`${API_BASE_URL}/api/${record.image_path}`}
                   alt="Hasil Screening"
                   className="w-full max-w-md mx-auto rounded-xl shadow-md"
                 />
