@@ -1,55 +1,10 @@
-import React from 'react';
 import { Activity, Eye, Heart, User, ArrowRight, Sparkles, CheckCircle, Camera, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/ui/Header';
+import { FeatureCard } from '@/components/ui/FeatureCard';
+import { HowItWorksStep } from '@/components/ui/HowItWorksStep';
 
-// Komponen Kartu Fitur (Sesuai gaya yang diberikan)
-const FeatureCard = ({ icon, title, description, color, gradientFrom, gradientTo }) => (
-  <div className="relative bg-white rounded-3xl p-6 sm:p-8 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 border border-gray-100 group overflow-hidden cursor-pointer">
-    <div className={`absolute inset-0 bg-gradient-to-br ${gradientFrom} ${gradientTo} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
-    <div className="relative z-10">
-      <div className={`w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-${color}-500 to-${color}-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
-        {React.cloneElement(icon, { className: "w-8 h-8 sm:w-10 sm:h-10 text-white" })}
-      </div>
-      <h4 className={`text-xl sm:text-2xl font-bold text-gray-800 mb-4 group-hover:text-${color}-600 transition-colors duration-300`}>{title}</h4>
-      <p className="text-gray-600 leading-relaxed text-sm sm:text-base group-hover:text-gray-700 transition-colors duration-300">{description}</p>
-      <div className={`mt-6 flex items-center text-${color}-600 font-semibold group-hover:translate-x-2 transition-transform duration-300`}>
-        <span className="text-sm">Mulai Screening</span>
-        <ArrowRight className="w-4 h-4 ml-2" />
-      </div>
-    </div>
-  </div>
-);
-
-
-// --- [DIREVISI] Komponen Langkah Cara Kerja (Gaya Baru) ---
-const HowItWorksStep = ({ number, icon, title, description }) => (
-  <div className="relative bg-white rounded-3xl p-6 sm:p-8 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 border border-gray-100 group overflow-hidden">
-    {/* Latar gradien saat hover */}
-    <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 to-teal-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-    {/* Nomor Langkah di Kiri Atas */}
-    <div className="absolute top-6 left-6 w-12 h-12 bg-gray-100 group-hover:bg-white rounded-full flex items-center justify-center font-bold text-emerald-600 text-xl transition-colors duration-300 z-20">
-      {number}
-    </div>
-
-    {/* Konten Utama */}
-    <div className="relative z-10 pt-20">
-      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
-        {React.cloneElement(icon, { className: "w-8 h-8 sm:w-10 sm:h-10 text-white" })}
-      </div>
-      <h4 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 group-hover:text-emerald-700 transition-colors duration-300">
-        {title}
-      </h4>
-      <p className="text-gray-600 leading-relaxed text-sm sm:text-base group-hover:text-gray-700 transition-colors duration-300">
-        {description}
-      </p>
-    </div>
-  </div>
-);
-
-// Komponen Utama Homepage
-export default function MedScanAppUI() {
+export default function HomePage() {
   const features = [
     { icon: <Eye />, title: 'Diabetic Retinopathy', description: 'Deteksi dini retinopati melalui analisis citra retina untuk mencegah kebutaan.', color: 'red', gradientFrom: 'from-red-50', gradientTo: 'to-orange-50' },
     { icon: <Heart />, title: 'Anemia Detection', description: 'Screening anemia non-invasif melalui analisis warna kuku dengan computer vision.', color: 'pink', gradientFrom: 'from-pink-50', gradientTo: 'to-red-50' },
@@ -129,10 +84,11 @@ export default function MedScanAppUI() {
                 <p className="text-lg text-emerald-100 mb-8 max-w-xl mx-auto">
                   Mulai langkah pertama Anda menuju deteksi dini dan kesehatan yang lebih baik dengan MedScan.
                 </p>
-                <button className="group bg-white text-emerald-700 px-10 py-4 rounded-xl text-lg font-bold hover:scale-105 transform transition-transform duration-300">
+                <Link
+                  to="/screening/menu" className="group bg-white text-emerald-700 px-10 py-4 rounded-xl text-lg font-bold hover:scale-105 transform transition-transform duration-300">
                   Mulai Screening Gratis
                   <ArrowRight className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-                </button>
+                </Link>
               </div>
             </div>
           </section>
