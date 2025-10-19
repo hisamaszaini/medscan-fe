@@ -70,7 +70,7 @@ const LoginModal = ({ onLogin }: { onLogin: () => void }) => {
     if (!username || !password) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/login`, {
+      const res = await fetch(`${API_BASE_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // ⚡ kirim cookie
