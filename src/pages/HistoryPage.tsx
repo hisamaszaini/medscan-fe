@@ -5,7 +5,7 @@ import Header from '@/components/ui/Header';
 import HistoryCard from '@/components/HistoryCard';
 import LoginModal from '@/components/LoginModal';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 
 export default function HistoryPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
