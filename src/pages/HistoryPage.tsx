@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FileText } from 'lucide-react';
+import { toast } from 'sonner';
 import Header from '@/components/ui/Header';
 import HistoryCard from '@/components/HistoryCard';
 import LoginModal from '@/components/LoginModal';
@@ -19,7 +20,7 @@ export default function HistoryPage() {
     if (!isLoggedIn) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/history?page=${page}&limit=${limit}`, {
+      const res = await fetch(`${API_BASE_URL}/history?page=${page}&limit=${limit}`, {
         credentials: 'include',
       });
       if (res.status === 401) {
@@ -32,7 +33,7 @@ export default function HistoryPage() {
       setTotalPages(data.total_pages || 1);
     } catch (err) {
       console.error(err);
-      alert('Gagal memuat data riwayat');
+      toast.error('Gagal memuat data riwayat');
     } finally {
       setLoading(false);
     }
@@ -41,6 +42,11 @@ export default function HistoryPage() {
   useEffect(() => {
     fetchHistory();
   }, [page, limit, isLoggedIn, reloadTrigger]);
+
+  const handleDeleted = (recordName: string) => {
+    toast.success(`Riwayat ${recordName} berhasil dihapus`);
+    setReloadTrigger((prev) => prev + 1);
+  };
 
   if (!isLoggedIn)
     return (
@@ -74,7 +80,11 @@ export default function HistoryPage() {
                 ) : historyData.length > 0 ? (
                   <>
                     {historyData.map((record) => (
-                      <HistoryCard key={record.created_at} record={record} onDeleted={record.id} />
+                      <HistoryCard
+                        key={record.created_at}
+                        record={record}
+                        onDeleted={() => handleDeleted(record.user?.name)}
+                      />
                     ))}
 
                     {/* Pagination */}
